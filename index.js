@@ -1,13 +1,80 @@
+require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
+const logger = require('morgan');
+const { sequelize } = require('./models');
+const cookieParser = require('cookie-parser');
 
 const app = express();
+app.use(logger('dev'));
 
-app.use('/', (req, res) => {
-  res.send('Welcome to g-nal_server!');
-});
+// ! ★ express ====================================
+// https://expressjs.com/ko/
+// (1) https://expressjs.com/ko/4x/api.html#express.json
+app.use(express.json());
+// (2) https://expressjs.com/ko/4x/api.html#express.urlencoded, https://stackoverflow.com/questions/29960764/what-does-extended-mean-in-express-4-0/45690436#45690436
+// app.use(express.urlencoded({ extended: false }));
+// ================================================
+
+// ! ★ cors =======================================
+// https://www.npmjs.com/package/cors
+// (1) Simple Usage (Enable All CORS Requests)
+// app.use(cors());
+// (2) Configuring CORS
+// ex1>
+// app.use(
+//   cors({
+//     origin: '*',
+//     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+//     preflightContinue: false,
+//     optionsSuccessStatus: 204,
+//   }),
+// );
+// ex2>
+app.use(
+  cors({
+    origin: [
+      'https://g-nal.com',
+      'https://www.g-nal.com',
+      'http://localhost:3000',
+      'https://localhost:3000',
+    ],
+    method: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // ! HEAD?
+    credentials: true,
+  }),
+);
+// ================================================
+
+// ! ★ cookie Parser ==============================
+// https://www.npmjs.com/package/cookie-parser
+app.use(cookieParser());
+// ================================================
+
+// ! ★ sequelize sync =============================
+sequelize
+  .sync({ force: true, alter: false })
+  .then(() => console.log('DB 접속 성공'))
+  .catch((err) => console.log(err));
+// ================================================
+
+// ! routing ======================================
+// (1) https://expressjs.com/ko/4x/api.html#express.router
+// (2) https://expressjs.com/ko/4x/api.html#router
+
+const indexRouter = require('./routes/index');
+const authRouter = require('./routes/auth');
+const refreshTokenRouter = require('./routes/refreshToken');
+const imageRouter = require('./routes/image');
+
+app.use('/', indexRouter);
+app.use('/auth', authRouter);
+app.use('/refreshtoken', refreshTokenRouter);
+app.use('/image', imageRouter);
+
+// ! 추가 중 =======================================
+
+// ================================================
 
 app.listen(1324, () => {
   console.log('server on 1324');
 });
-
-// pull request test
