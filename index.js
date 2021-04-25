@@ -36,8 +36,8 @@ app.use(
     origin: [
       'https://g-nal.com',
       'https://www.g-nal.com',
-      'http://localhost:3000',
-      'https://localhost:3000',
+      `http://localhost:${process.env.CLIENT_PORT}`,
+      `https://localhost:${process.env.CLIENT_PORT}`,
     ],
     method: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // ! HEAD?
     credentials: true,
@@ -51,10 +51,10 @@ app.use(cookieParser());
 // ================================================
 
 // ! ★ sequelize sync =============================
-sequelize
-  .sync({ force: true, alter: false })
-  .then(() => console.log('DB 접속 성공'))
-  .catch((err) => console.log(err));
+// sequelize
+//   .sync({ force: false, alter: false })
+//   .then(() => console.log('DB 접속 성공'))
+//   .catch((err) => console.log(err));
 // ================================================
 
 // ! routing ======================================
@@ -75,6 +75,6 @@ app.use('/image', imageRouter);
 
 // ================================================
 
-app.listen(1324, () => {
-  console.log('server on 1324');
+app.listen(process.env.SERVER_PORT, () => {
+  console.log(`server on ${process.env.SERVER_PORT}`);
 });
