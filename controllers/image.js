@@ -1,5 +1,5 @@
 const { user, album, children, institution, food } = require('../models');
-const { checkAccessToken } = require('../modules/checkAccessToken');
+const { checkAccessToken } = require('../modules/tokenFunctions');
 
 module.exports = {
   index: async (req, res) => {
@@ -224,7 +224,7 @@ module.exports = {
 
     const { userId } = accessTokenData;
     // ! for postman
-    // const userId = asdf;
+    // const userId = postman;
 
     const userInfo = await user.findOne({
       where: { id: userId },
@@ -232,9 +232,9 @@ module.exports = {
     });
     const institutionId = userInfo.dataValues.institutionId;
 
-    // ! asdfasdf ================
-    console.log(123123, req.file);
-    console.log(234234, req.file.location);
+    // ! check ====================
+    console.log('req.file : ', req.file);
+    console.log('req.file.location : ', req.file.location);
     // ! ==========================
 
     const image = req.file;
@@ -246,7 +246,7 @@ module.exports = {
         return res.status(400).json({ message: '서버에 문의해주세요' });
       }
 
-      // ! asdfasdf
+      // ! check
       // ! (1) udate 관련하여, 에러 상황에서도 가장 최신에 작성된 record만 update 될 수 있게 하는 쿼리문이 분명 있을터이니, 후에 찾아보도록.
       // ! (2) 다른 대안이 하나 더 있다. photoCheck라는 record를 추가하는 것. /image/profile 과 /image/profilepost 에서 그러한 방법을 사용하고 있으니, 추후에 (1), (2) 중 하나를 선택하여 보완하도록.
       await album.update(
@@ -378,7 +378,7 @@ module.exports = {
 
     const { userId } = accessTokenData;
     // ! for postman
-    // const userId = asdf
+    // const userId = postman
 
     const userInfo = await user.findOne({
       where: { id: userId },
@@ -395,7 +395,7 @@ module.exports = {
         return res.status(400).json({ message: '서버에 문의해주세요' });
       }
 
-      // ! asdfasdf
+      // ! check
       // ! (1) udate 관련하여, 에러 상황에서도 가장 최신에 작성된 record만 update 될 수 있게 하는 쿼리문이 분명 있을터이니, 후에 찾아보도록.
       // ! (2) 다른 대안이 하나 더 있다. photoCheck라는 record를 추가하는 것. /image/profile 과 /image/profilepost 에서 그러한 방법을 사용하고 있으니, 추후에 (1), (2) 중 하나를 선택하여 보완하도록.
       await food.update(

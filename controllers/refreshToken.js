@@ -3,7 +3,7 @@ const {
   checkRefeshToken,
   generateAccessToken,
   resendAccessToken,
-} = require('./tokenFunctions');
+} = require('../modules/tokenFunctions');
 
 module.exports = {
   refreshTokenModule: (req, res) => {

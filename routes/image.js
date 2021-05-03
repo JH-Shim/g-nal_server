@@ -15,7 +15,7 @@ const s3 = new aws.S3({
 const upload = multer({
   storage: multerS3({
     s3: s3,
-    bucket: 'datda-img',
+    bucket: 'bucket name',
     contentType: multerS3.AUTO_CONTENT_TYPE, // ! 콘텐츠 타입을 자동으로 세팅(이 설정을 하지 않을 경우, 해당 사진이 저장된 URL로 입장 시 사진다운로드가 진행됨)
     acl: 'public-read', // ! 클라이언트에서 자유롭게 가용하기 위함
     metadata: function (req, file, cb) {
@@ -47,7 +47,7 @@ router.post(
   imageController.profilePost,
 );
 
-// ! asdfasdf 여러 사진을 한번에 업로드 하는 것도 금방 구현하니깐, 필요한 부분이라고 생각되면 합시다.
+// ! check 여러 사진을 한번에 업로드 하는 것도 금방 구현하니깐, 필요한 부분이라고 생각되면 합시다.
 // app.post('/upload', upload.array('photos', 3), function (req, res, next) {
 //   res.send('Successfully uploaded ' + req.files.length + ' files!');
 // });

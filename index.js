@@ -39,7 +39,7 @@ app.use(
       `http://localhost:${process.env.CLIENT_PORT}`,
       `https://localhost:${process.env.CLIENT_PORT}`,
     ],
-    method: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // ! HEAD?
+    method: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // ! check HEAD?
     credentials: true,
   }),
 );
@@ -62,12 +62,12 @@ app.use(cookieParser());
 // (2) https://expressjs.com/ko/4x/api.html#router
 
 const indexRouter = require('./routes/index');
-const authRouter = require('./routes/auth');
+const accountsRouter = require('./routes/accounts');
 const refreshTokenRouter = require('./routes/refreshToken');
 const imageRouter = require('./routes/image');
 
 app.use('/', indexRouter);
-app.use('/auth', authRouter);
+app.use('/accounts', accountsRouter);
 app.use('/refreshtoken', refreshTokenRouter);
 app.use('/image', imageRouter);
 
