@@ -23,20 +23,34 @@ module.exports = {
       });
 
     if (!findUserId) {
-      await user
-        .create({
-          userId,
-          nickname,
-          password: hashedPassword,
+      const findNickname = await user
+        .findOne({
+          where: { nickname },
         })
-        .then((data) => {
-          res.status(200).json({
-            message: 'signup succeeded',
-          });
+        .catch((err) => {
+          console.log(err); // ! check
         });
+
+      if (!findNickname) {
+        await user // ! check await 필요 없음
+          .create({
+            userId,
+            nickname,
+            password: hashedPassword,
+          })
+          .then((data) => {
+            res.status(201).json({
+              message: 'signup succeeded',
+            });
+          });
+      } else {
+        res.status(202).json({
+          message: '존재하는 닉네임입니다.',
+        });
+      }
     } else {
-      res.status(201).json({
-        message: 'existing userId',
+      res.status(202).json({
+        message: '존재하는 아이디입니다.',
       });
     }
   },

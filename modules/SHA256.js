@@ -132,7 +132,7 @@ exports.SHA256 = (s) => {
 
     m[(((l + 64) >> 9) << 4) + 15] = l;
 
-    for (var i = 0; i < m.length; i += 16) {
+    for (/* var */ i = 0; i < m.length; i += 16) {
       a = HASH[0];
 
       b = HASH[1];
@@ -149,7 +149,7 @@ exports.SHA256 = (s) => {
 
       h = HASH[7];
 
-      for (var j = 0; j < 64; j++) {
+      for (/* var */ j = 0; j < 64; j++) {
         if (j < 16) W[j] = m[j + i];
         else
           W[j] = safe_add(
