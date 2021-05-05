@@ -4,7 +4,6 @@ const {
   generateRefreshToken,
   sendRefreshToken,
   sendAccessToken,
-  isAuthorized,
 } = require('../modules/tokenFunctions');
 const { SHA256 } = require('../modules/SHA256');
 
@@ -85,19 +84,5 @@ module.exports = {
         sendAccessToken(res, accessToken);
       }
     }
-  },
-
-  logout: async (req, res) => {
-    const accessTokenData = isAuthorized(req);
-    if (!accessTokenData) {
-      return res.status(201).json({
-        message: 'logout failed(no token in req.headers.authorization)',
-      });
-    } else if (accessTokenData === 'invalid token') {
-      return res.status(201).json({
-        message: 'logout failed(invalid token)',
-      });
-    }
-    res.status(200).json({ message: 'logout succeded' });
   },
 };
