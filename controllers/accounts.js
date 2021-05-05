@@ -40,7 +40,7 @@ module.exports = {
           })
           .then((data) => {
             res.status(201).json({
-              message: 'signup succeeded',
+              message: 'sign up succeeded',
             });
           });
       } else {
@@ -60,41 +60,30 @@ module.exports = {
     const saltedPassword = userId + password;
     const hashedPassword = SHA256(saltedPassword);
 
-    const findUserId = await user
+    const userInfo = await user
       .findOne({
         where: { userId },
+        attributes: ['id', 'userId', 'password', 'nickname'], // ! check nickname
       })
       .catch((err) => {
         console.log(err); // ! check
       });
 
-    if (!findUserId) {
-      return res.status(201).json({ message: 'userId does not exist' });
+    if (!userInfo) {
+      res.status(202).json({ message: '존재하지 않는 아이디입니다.' });
     } else {
-      user
-        .findOne({
-          where: {
-            userId,
-            password: hashedPassword,
-          },
-        })
-        .then((data) => {
-          if (!data) {
-            return res.status(202).json({ message: 'wrong password' });
-          }
+      if (userInfo.password !== hashedPassword) {
+        res.status(202).json({ message: '비밀번호를 확인해 주세요.' });
+      } else {
+        const { id, userId } = userInfo;
+        const tokenData = { id, userId };
 
-          const { id, userId } = data.dataValues;
-          const userInfo = { id, userId };
+        const accessToken = generateAccessToken(tokenData);
+        const refreshToken = generateRefreshToken(tokenData);
 
-          const accessToken = generateAccessToken(userInfo);
-          const refreshToken = generateRefreshToken(userInfo);
-
-          sendAccessToken(res, accessToken);
-          sendRefreshToken(res, refreshToken);
-        })
-        .catch((err) => {
-          console.log(err); // ! check
-        });
+        sendRefreshToken(res, refreshToken); // ! check sendRefreshToken, sendAccessToken 순서
+        sendAccessToken(res, accessToken);
+      }
     }
   },
 
