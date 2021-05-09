@@ -9,14 +9,18 @@ var multerS3 = require('multer-s3');
 const s3 = new aws.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.REGION,
+  region: process.env.AWS_S3_BUCKET_REGION,
 });
 
+// ! cf> 서버에 폴더를 하나 만들고 그곳에 사진을 저장하고 싶다면 다음과 같이.
+// const upload = multer({
+//   dest: 'image/',
+// });
 const upload = multer({
   storage: multerS3({
     s3: s3,
-    bucket: 'bucket name',
-    contentType: multerS3.AUTO_CONTENT_TYPE, // ! 콘텐츠 타입을 자동으로 세팅(이 설정을 하지 않을 경우, 해당 사진이 저장된 URL로 입장 시 사진다운로드가 진행됨)
+    bucket: process.env.AWS_S3_BUCKET_NAME,
+    contentType: multerS3.AUTO_CONTENT_TYPE, // ! 콘텐츠 타입을 자동으로 세팅(이 설정을 하지 않을 경우, 해당 사진이 저장된 URL로 접근 시 사진 다운로드가 진행된다.)
     acl: 'public-read', // ! 클라이언트에서 자유롭게 가용하기 위함
     metadata: function (req, file, cb) {
       cb(null, { fieldName: file.fieldname });
@@ -27,27 +31,18 @@ const upload = multer({
   }),
   // limits: { fileSize: 5 * 1024 * 1024 }, // ! 용량과 관련
 });
-// ! cf> 서버에 폴더 하나 만들어서 사진을 업로드 하고 싶다면 아래와 같이 하면 됨.
-// const upload = multer({
-//   dest: 'image/',
-// });
 
 const imageController = require('../controllers/image');
 
-router.post('/', upload.single('image'), imageController.index);
-router.post('/s3', upload.single('image'), imageController.S3);
-router.post('/album', imageController.album);
-router.post('/albumpost', upload.single('image'), imageController.albumPost);
-router.post('/food', imageController.food);
-router.post('/foodpost', upload.single('image'), imageController.foodPost);
-router.post('/profile', imageController.profile);
-router.post(
-  '/profilepost',
-  upload.single('image'),
-  imageController.profilePost,
-);
+// ! (samplecode)서버에 사진을 저장할 시.
+router.post('/multer', upload.single('image'), imageController.multer);
+// ! (samplecode)S3에 사진을 저장할 시.
+router.post('/multers3', upload.single('image'), imageController.multers3);
 
-// ! check 여러 사진을 한번에 업로드 하는 것도 금방 구현하니깐, 필요한 부분이라고 생각되면 합시다.
+router.post('/place', imageController.place);
+router.post('/placeimg', upload.single('image'), imageController.placeimg);
+
+// ! check 여러 사진을 한번에 업로드하는 것과 관련.
 // app.post('/upload', upload.array('photos', 3), function (req, res, next) {
 //   res.send('Successfully uploaded ' + req.files.length + ' files!');
 // });
