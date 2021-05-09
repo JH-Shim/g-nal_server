@@ -52,7 +52,7 @@ module.exports = {
           lng,
         })
         .then((data) => {
-          res.status(201).json(data); // ! check
+          res.status(201).json({ message: 'place uploaded' });
         });
     }
   },
