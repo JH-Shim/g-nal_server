@@ -74,8 +74,8 @@ module.exports = {
       if (userInfo.password !== hashedPassword) {
         res.status(202).json({ message: '비밀번호를 확인해 주세요.' });
       } else {
-        const { id, userId } = userInfo;
-        const tokenData = { id, userId };
+        const { id, userId, nickname } = userInfo;
+        const tokenData = { id, userId, nickname };
 
         const accessToken = generateAccessToken(tokenData);
         const refreshToken = generateRefreshToken(tokenData);
