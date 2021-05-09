@@ -62,7 +62,7 @@ module.exports = {
     const userInfo = await user
       .findOne({
         where: { userId },
-        attributes: ['id', 'userId', 'password', 'nickname'], // ! check nickname
+        attributes: ['id', 'userId', 'password', 'nickname'],
       })
       .catch((err) => {
         console.log(err); // ! check

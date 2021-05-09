@@ -26,37 +26,23 @@ module.exports = {
     });
   },
 
-  isAuthorized: (req) => {
+  checkAccessToken: (req, res) => {
     const authorization = req.headers['authorization'];
-    if (!authorization) {
-      return null;
-    }
-    // const token = authorization.split(' ')[1];
+    // if (!authorization) {
+    //   return null; // ! check 왜 이 조건으로는 안빠지지?
+    // }
     try {
       return verify(authorization, process.env.ACCESS_SECRET);
     } catch (err) {
-      // return null if invalid token
       console.log(err);
-      return 'invalid token';
-    }
-  },
-
-  checkAccessToken: (req, res) => {
-    const accessTokenData = this.isAuthorized(req);
-    if (!accessTokenData) {
-      res.status(201).json({
-        message: 'no token in request headers',
-      });
-    } else if (accessTokenData === 'invalid token') {
-      res.status(201).json({
+      res.status(202).json({
         message: 'invalid token',
       });
+      return 'invalid token';
     }
-    return accessTokenData;
-
     // ! check refactoring?
     // const accessTokenData = checkAccessToken(req, res);
-    // if (!accessTokenData || accessTokenData === 'invalid token') {
+    // if (accessTokenData === 'invalid token') {
     //   return;
     // }
   },
