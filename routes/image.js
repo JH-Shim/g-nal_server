@@ -12,7 +12,7 @@ const s3 = new aws.S3({
   region: process.env.AWS_S3_BUCKET_REGION,
 });
 
-// ! cf> 서버에 폴더를 하나 만들고 그곳에 사진을 저장하고 싶다면 다음과 같이.
+// ! cf> 서버에 폴더를 하나 만들고 그곳에 사진을 저장하고 싶다면 다음과 같이 하면 된다.
 // const upload = multer({
 //   dest: 'image/',
 // });
