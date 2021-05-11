@@ -9,10 +9,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      models.place.belongsTo(models.user);
     }
   }
   place.init(
     {
+      // userId: DataTypes.INTEGER,
       account: DataTypes.STRING,
       nickname: DataTypes.STRING,
       placeName: DataTypes.STRING,

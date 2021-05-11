@@ -75,7 +75,7 @@ module.exports = {
         res.status(202).json({ message: '비밀번호를 확인해 주세요.' });
       } else {
         const { id, account, nickname } = userInfo;
-        const tokenData = { id, account, nickname };
+        const tokenData = { userId: id, account, nickname };
 
         const accessToken = generateAccessToken(tokenData);
         const refreshToken = generateRefreshToken(tokenData);
