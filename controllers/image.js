@@ -38,11 +38,12 @@ module.exports = {
     if (!placePhoto) {
       res.status(202).json({ message: 'image error' }); // ! check 이런 일은 없을 것 같다.
     } else {
-      const { account, nickname } = accessTokenData;
+      const { userId, account, nickname } = accessTokenData;
       const { placeName, placeDescription, lat, lng } = req.body;
 
       await place
         .create({
+          userId,
           account,
           nickname,
           placeName,
