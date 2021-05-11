@@ -9,19 +9,19 @@ const { SHA256 } = require('../modules/SHA256');
 
 module.exports = {
   signup: async (req, res) => {
-    const { userId, nickname, password } = req.body;
-    const saltedPassword = userId + password;
+    const { account, nickname, password } = req.body;
+    const saltedPassword = account + password;
     const hashedPassword = SHA256(saltedPassword);
 
-    const findUserId = await user
+    const findAccount = await user
       .findOne({
-        where: { userId },
+        where: { account },
       })
       .catch((err) => {
         console.log(err); // ! check
       });
 
-    if (!findUserId) {
+    if (!findAccount) {
       const findNickname = await user
         .findOne({
           where: { nickname },
@@ -33,7 +33,7 @@ module.exports = {
       if (!findNickname) {
         await user // ! check await 필요 없음
           .create({
-            userId,
+            account,
             nickname,
             password: hashedPassword,
           })
@@ -55,14 +55,14 @@ module.exports = {
   },
 
   signin: async (req, res) => {
-    const { userId, password } = req.body;
-    const saltedPassword = userId + password;
+    const { account, password } = req.body;
+    const saltedPassword = account + password;
     const hashedPassword = SHA256(saltedPassword);
 
     const userInfo = await user
       .findOne({
-        where: { userId },
-        attributes: ['id', 'userId', 'password', 'nickname'],
+        where: { account },
+        attributes: ['id', 'account', 'password', 'nickname'],
       })
       .catch((err) => {
         console.log(err); // ! check
@@ -74,8 +74,8 @@ module.exports = {
       if (userInfo.password !== hashedPassword) {
         res.status(202).json({ message: '비밀번호를 확인해 주세요.' });
       } else {
-        const { id, userId, nickname } = userInfo;
-        const tokenData = { id, userId, nickname };
+        const { id, account, nickname } = userInfo;
+        const tokenData = { id, account, nickname };
 
         const accessToken = generateAccessToken(tokenData);
         const refreshToken = generateRefreshToken(tokenData);

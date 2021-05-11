@@ -22,17 +22,17 @@ module.exports = {
       });
     }
 
-    const { userId } = refreshTokenData;
+    const { account } = refreshTokenData;
     user
-      .findOne({ where: { userId } })
+      .findOne({ where: { account } })
       .then((data) => {
         if (!data) {
           return res.status(203).json({
             message: 'refresh token has been tempered',
           });
         }
-        const { id, email } = data.dataValues;
-        const userInfo = { userId: id, email };
+        const { account } = data.dataValues;
+        const userInfo = { account };
 
         const newAccessToken = generateAccessToken(userInfo);
         resendAccessToken(res, newAccessToken, data.dataValues);
