@@ -65,11 +65,13 @@ const indexRouter = require('./routes/index');
 const accountsRouter = require('./routes/accounts');
 const refreshTokenRouter = require('./routes/refreshToken');
 const imageRouter = require('./routes/image');
+const placeRouter = require('./routes/place');
 
 app.use('/', indexRouter);
 app.use('/accounts', accountsRouter);
 app.use('/refreshtoken', refreshTokenRouter);
 app.use('/image', imageRouter);
+app.use('/place', placeRouter);
 
 // ! 추가 중 =======================================
 
