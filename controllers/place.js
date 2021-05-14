@@ -10,8 +10,8 @@ module.exports = {
       return;
     }
 
-    const { account } = accessTokenData;
-    const { urlAccount } = req.body;
+    const { userId } = accessTokenData;
+    const { urlAccount } = req.query;
 
     const urlAccountUserInfo = await user.findOne({
       where: { account: urlAccount },
@@ -36,7 +36,7 @@ module.exports = {
           ],
         ],
       });
-      if (account !== urlAccount) {
+      if (urlAccountUserInfo.id !== userId) {
         res.status(200).json({ placeInfo, message: '!owner' });
       } else {
         res.status(200).json({ placeInfo, message: 'owner' });
@@ -44,5 +44,38 @@ module.exports = {
     }
   },
 
-  place: async (req, res) => {},
+  placeId: async (req, res) => {
+    const accessTokenData = checkAccessToken(req, res);
+    if (accessTokenData === 'invalid token') {
+      return;
+    }
+
+    const { userId } = accessTokenData;
+    const { placeId } = req.params;
+    const { urlAccount } = req.query;
+
+    const placeInfo = await place.findOne({
+      where: { id: placeId },
+      attributes: [
+        'userId',
+        'account',
+        'nickname',
+        'placeName',
+        'placePhoto',
+        'placeDescription',
+        [
+          sequelize.fn('date_format', sequelize.col('createdAt'), '%Y-%m-%d'),
+          'createdAt',
+        ],
+      ],
+    });
+
+    if (!placeInfo || placeInfo.account !== urlAccount) {
+      res.status(202).json({ message: 'no such place' });
+    } else if (placeInfo.userId !== userId) {
+      res.status(200).json({ placeInfo, message: '!owner' });
+    } else {
+      res.status(200).json({ placeInfo, message: 'owner' });
+    }
+  },
 };
