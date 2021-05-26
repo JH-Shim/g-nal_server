@@ -34,7 +34,8 @@ module.exports = {
       return;
     }
 
-    const placePhoto = req.file.location;
+    // const placePhoto = req.file.location; // ! multer-s3 사용 시
+    const placePhoto = req.file.Location;
     if (!placePhoto) {
       res.status(202).json({ message: 'image error' }); // ! check 이런 일은 없을 것 같다.
     } else {
