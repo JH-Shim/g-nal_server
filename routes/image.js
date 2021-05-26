@@ -4,7 +4,8 @@ const router = express.Router();
 const multer = require('multer');
 
 const aws = require('aws-sdk');
-var multerS3 = require('multer-s3');
+// const multerS3 = require('multer-s3');
+const multerS3 = require('multer-sharp-s3');
 
 const s3 = new aws.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -16,20 +17,41 @@ const s3 = new aws.S3({
 // const upload = multer({
 //   dest: 'image/',
 // });
+// ! multer-s3 사용 시(resizing X)
+// const upload = multer({
+//   storage: multerS3({
+//     s3: s3,
+//     bucket: process.env.AWS_S3_BUCKET_NAME,
+//     contentType: multerS3.AUTO_CONTENT_TYPE, // ! 콘텐츠 타입을 자동으로 세팅(이 설정을 하지 않을 경우, 해당 사진이 저장된 URL로 접근 시 사진 다운로드가 진행된다.)
+//     acl: 'public-read', // ! 클라이언트에서 자유롭게 가용하기 위함
+//     metadata: function (req, file, cb) {
+//       cb(null, { fieldName: file.fieldname });
+//     },
+//     key: function (req, file, cb) {
+//       cb(null, Date.now().toString());
+//     },
+//   }),
+//   // limits: { fileSize: 5 * 1024 * 1024 }, // ! 용량과 관련
+// });
+// ! multer-sharp-s3 사용 시(for resizing)
 const upload = multer({
   storage: multerS3({
     s3: s3,
-    bucket: process.env.AWS_S3_BUCKET_NAME,
-    contentType: multerS3.AUTO_CONTENT_TYPE, // ! 콘텐츠 타입을 자동으로 세팅(이 설정을 하지 않을 경우, 해당 사진이 저장된 URL로 접근 시 사진 다운로드가 진행된다.)
-    acl: 'public-read', // ! 클라이언트에서 자유롭게 가용하기 위함
+    Bucket: process.env.AWS_S3_BUCKET_NAME,
+    ACL: 'public-read',
     metadata: function (req, file, cb) {
-      cb(null, { fieldName: file.fieldname }); // ! check
+      cb(null, { fieldName: file.fieldname });
     },
-    key: function (req, file, cb) {
-      cb(null, Date.now().toString()); // ! check
+    Key: function (req, file, cb) {
+      cb(null, Date.now().toString());
     },
+    resize: {
+      width: 600,
+      // height: 600,
+    },
+    withMetadata: true,
+    max: true,
   }),
-  // limits: { fileSize: 5 * 1024 * 1024 }, // ! 용량과 관련
 });
 
 const imageController = require('../controllers/image');
