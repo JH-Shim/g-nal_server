@@ -142,7 +142,7 @@ module.exports = {
             ],
           ],
         });
-        res.status(202).json({ comments, message: 'comment added' });
+        res.status(201).json({ comments, message: 'comment added' });
       });
     // .catch() // ! check
   },
