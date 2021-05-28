@@ -123,8 +123,26 @@ module.exports = {
         userId,
         nickname,
       })
-      .then((data) => {
-        res.status(202).json({ message: 'comment added' });
+      .then(async (data) => {
+        const comments = await comment.findAll({
+          where: { placeId },
+          order: [['id', 'DESC']],
+          attributes: [
+            ['id', 'commentId'],
+            'comment',
+            'userId',
+            'nickname',
+            [
+              sequelize.fn(
+                'date_format',
+                sequelize.col('createdAt'),
+                '%Y/%c/%e',
+              ),
+              'createdAt',
+            ],
+          ],
+        });
+        res.status(202).json({ comments, message: 'comment added' });
       });
     // .catch() // ! check
   },
